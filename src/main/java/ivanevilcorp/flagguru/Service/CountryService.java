@@ -2,11 +2,10 @@ package ivanevilcorp.flagguru.Service;
 
 import ivanevilcorp.flagguru.Entity.Country;
 import ivanevilcorp.flagguru.Repository.CountryRepo;
-import org.apache.tomcat.util.json.JSONFilter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,6 @@ public class CountryService {
     private final CountryRepo countryRepo;
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String API_COUNTRY_URL = "https://restcountries.com/v3.1/all?fields=name,flags,cca2";
-
 
     public CountryService(CountryRepo countryRepo) {
         this.countryRepo = countryRepo;
