@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,9 @@ import java.util.List;
 public class CountryService {
     private final CountryRepo countryRepo;
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String API_COUNTRY_URL = "https://restcountries.com/v3.1/all?fields=name,flags,cca2";
+    private static final String API_COUNTRY_URL = UriComponentsBuilder.fromHttpUrl("https://restcountries.com/v3.1/all")
+            .queryParam("fields", "name,flags,cca2")
+            .toUriString();
 
     public CountryService(CountryRepo countryRepo) {
         this.countryRepo = countryRepo;
