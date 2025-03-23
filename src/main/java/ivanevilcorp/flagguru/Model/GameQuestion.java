@@ -9,6 +9,5 @@ import java.util.List;
 public class GameQuestion {
     private String flagURL;
     private List<String> options;
-    @JsonIgnore
     private String correctOption;
 }

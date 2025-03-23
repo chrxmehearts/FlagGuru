@@ -20,6 +20,11 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         button {
             padding: 10px 20px;
@@ -30,6 +35,8 @@
             cursor: pointer;
             border-radius: 5px;
             margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
         }
         button:hover {
             background: #0056b3;
@@ -40,10 +47,17 @@
             border-radius: 5px;
             border: 2px solid #ddd;
         }
+        .options {
+            width: 100%;
+            max-width: 300px;
+        }
         .options button {
             display: block;
             width: 100%;
             margin: 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .result {
             font-size: 18px;
@@ -59,6 +73,13 @@
         #nextFlag {
             display: none;
             margin: 15px auto;
+        }
+        .strikethrough {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        .correct-answer {
+            background-color: green;
         }
     </style>
 </head>
@@ -76,6 +97,8 @@
 </div>
 
 <script>
+    let correctAnswer;
+
     document.getElementById("startGame").addEventListener("click", () => {
         startGame();
     });
@@ -88,6 +111,7 @@
         fetch("/flag-guru/game")
             .then(response => response.json())
             .then(data => {
+                correctAnswer = data.correctOption;
                 document.getElementById("flag").src = data.flagURL;
                 document.getElementById("flag").style.display = "block";
                 document.getElementById("question").textContent = data.question;
@@ -107,23 +131,38 @@
     }
 
     function submitAnswer(answer) {
-        fetch("/flag-guru/game", {
-            method: "POST",
-            headers: { "Content-Type": "text/plain" },
-            body: answer
-        })
-            .then(response => response.text())
-            .then(result => {
-                const resultElement = document.getElementById("result");
-                resultElement.textContent = result;
-                if (result === "Correct!") {
-                    resultElement.className = "result correct";
-                    document.getElementById("nextFlag").style.display = "block";
-                } else {
-                    resultElement.className = "result wrong";
-                    document.getElementById("nextFlag").style.display = "none";
+        const options = document.querySelectorAll("#options button");
+        const resultElement = document.getElementById("result");
+
+        if (answer === correctAnswer) {
+            resultElement.textContent = "Correct!";
+            resultElement.className = "result correct";
+            document.getElementById("nextFlag").style.display = "block";
+
+
+            options.forEach(button => {
+                if (button.textContent === correctAnswer) {
+                    button.classList.add("correct-answer");
                 }
             });
+        } else {
+            resultElement.textContent = "Wrong!";
+            resultElement.className = "result wrong";
+
+
+            options.forEach(button => {
+                if (button.textContent === answer) {
+                    button.classList.add("strikethrough");
+                }
+            });
+        }
+
+
+        options.forEach(button => {
+            if (button.textContent === answer) {
+                button.disabled = true;
+            }
+        });
     }
 </script>
 </body>
