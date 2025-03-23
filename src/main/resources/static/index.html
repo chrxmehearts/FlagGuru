@@ -50,6 +50,16 @@
             font-weight: bold;
             margin-top: 15px;
         }
+        .correct {
+            color: green;
+        }
+        .wrong {
+            color: red;
+        }
+        #nextFlag {
+            display: none;
+            margin: 15px auto;
+        }
     </style>
 </head>
 <body>
@@ -61,11 +71,20 @@
         <p id="question"></p>
         <div id="options" class="options"></div>
         <p id="result" class="result"></p>
+        <button id="nextFlag">Next Flag</button>
     </div>
 </div>
 
 <script>
     document.getElementById("startGame").addEventListener("click", () => {
+        startGame();
+    });
+
+    document.getElementById("nextFlag").addEventListener("click", () => {
+        startGame();
+    });
+
+    function startGame() {
         fetch("/flag-guru/game")
             .then(response => response.json())
             .then(data => {
@@ -81,8 +100,11 @@
                 });
 
                 document.getElementById("questionContainer").style.display = "block";
+                document.getElementById("startGame").style.display = "none";
+                document.getElementById("nextFlag").style.display = "none";
+                document.getElementById("result").textContent = "";
             });
-    });
+    }
 
     function submitAnswer(answer) {
         fetch("/flag-guru/game", {
@@ -92,7 +114,15 @@
         })
             .then(response => response.text())
             .then(result => {
-                document.getElementById("result").textContent = result;
+                const resultElement = document.getElementById("result");
+                resultElement.textContent = result;
+                if (result === "Correct!") {
+                    resultElement.className = "result correct";
+                    document.getElementById("nextFlag").style.display = "block";
+                } else {
+                    resultElement.className = "result wrong";
+                    document.getElementById("nextFlag").style.display = "none";
+                }
             });
     }
 </script>
