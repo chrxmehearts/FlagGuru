@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class RedirectController {
-    @RequestMapping("/")
+    @RequestMapping({"/", "", "/flag-guru", "/flag-guru/"})
     public String redirectToWelcomePage(){
-        return "redirect:/flag-guru/welcome";
+        return "redirect:/game.html";
     }
 }

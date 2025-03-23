@@ -19,11 +19,6 @@ public class GameController {
         this.countryService = countryService;
     }
 
-    @GetMapping("/welcome")
-    public ResponseEntity<String> welcomePage() {
-        return ResponseEntity.ok("Welcome to Flag Guru!");
-    }
-
     @GetMapping("/game")
     public ResponseEntity<GameQuestion> gamePage(HttpSession session) {
         GameQuestion gameQuestion = gameService.startGame();
