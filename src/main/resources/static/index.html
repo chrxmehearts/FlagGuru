@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag Guru</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        img {
+            width: 200px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Flag Guru</h1>
+    <button id="startGame">Start Game</button>
+    <div id="questionContainer" style="display: none;">
+        <img id="flag" src="" alt="Flag" style="display: none;">
+        <p id="question"></p>
+        <div id="options" class="options"></div>
+        <p id="result" class="result"></p>
+    </div>
+</div>
+
+<script>
+    document.getElementById("startGame").addEventListener("click", () => {
+        fetch("/flag-guru/game")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("flag").src = data.flagURL;
+                document.getElementById("flag").style.display = "block";
+                document.getElementById("question").textContent = data.question;
+                document.getElementById("options").innerHTML = "";
+                data.options.forEach(option => {
+                    const button = document.createElement("button");
+                    button.textContent = option;
+                    button.addEventListener("click", () => submitAnswer(option));
+                    document.getElementById("options").appendChild(button);
+                });
+
+                document.getElementById("questionContainer").style.display = "block";
+            });
+    });
+
+    function submitAnswer(answer) {
+        fetch("/flag-guru/game", {
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            body: answer
+        })
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById("result").textContent = result;
+            });
+    }
+</script>
+</body>
+</html>
